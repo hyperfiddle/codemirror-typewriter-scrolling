@@ -18,11 +18,9 @@
         if (cm.getOption("disableInput")) {
             return CodeMirror.Pass;
         }
-        var cursor = cm.getCursor('anchor');
-        var top = cm.charCoords({line: cursor.line, ch: 0}, "local").top;
-        var halfWindowHeight = cm.getWrapperElement().offsetHeight / 2;
-        var scrollTo = Math.round((top - halfWindowHeight));
-        cm.scrollTo(null, scrollTo);
+        var s = cm.getScrollInfo(); // {left: 0, top: 285, height: 314, width: 694, clientHeight: 29, …}
+        var scrollTo_y = s.height - s.clientHeight;
+        cm.scrollTo(0, scrollTo_y);
     };
     CodeMirror.defineOption("typewriterScrolling", false, function (cm, val, old) {
         if (old && old != CodeMirror.Init) {
@@ -38,7 +36,7 @@
         }
         for (var i = 0, len = changes.length; i < len; i++) {
             var each = changes[i];
-            if (each.origin === '+input' || each.origin === '+delete') {
+            if (each.origin === 'setValue') {
                 cm.execCommand("scrollSelectionToCenter");
                 return;
             }
